@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "6+EGdlsBwvA=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\zVito\\OneDrive\\Desktop\\DesafioTarget\\DesafioTarget.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\zVito\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
