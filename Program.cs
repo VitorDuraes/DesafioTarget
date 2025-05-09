@@ -1,32 +1,81 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Text;
 
 class Program
 {
     static void Main()
     {
-        // Desafio 1: Soma dos números de 1 a 13
-        int INDICE = 13, SOMA = 0, K = 0;
-        while (K < INDICE)
+        Desafio1_Soma();
+        Desafio2_Fibonacci(21);
+        Desafio3_AnaliseFaturamento();
+        Desafio4_PercentualPorEstado();
+        Desafio5_InverterTexto("Hello, C#!");
+    }
+
+    static void Desafio1_Soma()
+    {
+        const int INDICE = 13;
+        int soma = 0, k = 0;
+
+        while (k < INDICE)
         {
-            K = K + 1;
-            SOMA = SOMA + K;
+            k++;
+            soma += k;
         }
-        Console.WriteLine("Desafio 1 - Soma: " + SOMA);
 
-        // Desafio 2: Verifica se um número pertence à sequência de Fibonacci
-        int numero = 21; // Número para verificar
-        Console.WriteLine($"Desafio 2 - O número {numero} pertence à sequência de Fibonacci? " + EhFibonacci(numero));
+        Console.WriteLine($"Desafio 1 - Soma dos números de 1 a {INDICE}: {soma}");
+    }
 
-        // Desafio 3: Análise de faturamento mensal
+    static void Desafio2_Fibonacci(int numero)
+    {
+        bool pertence = EhFibonacci(numero);
+        Console.WriteLine($"Desafio 2 - O número {numero} {(pertence ? "pertence" : "não pertence")} à sequência de Fibonacci.");
+    }
+
+    static bool EhFibonacci(int num)
+    {
+        int a = 0, b = 1;
+
+        while (b < num)
+        {
+            int temp = a + b;
+            a = b;
+            b = temp;
+        }
+
+        return num == 0 || b == num;
+    }
+
+    static void Desafio3_AnaliseFaturamento()
+    {
         string json = "{\"faturamento\": [15.5, 20.3, 0, 30.2, 0, 10.5, 50.1, 5.0, 0, 40.3]}";
-        var faturamentoMensal = JsonConvert.DeserializeObject<Dictionary<string, List<double>>>(json)["faturamento"];
-        AnaliseFaturamento(faturamentoMensal);
 
-        // Desafio 4: Cálculo percentual de faturamento por estado
-        Dictionary<string, double> faturamentoEstados = new Dictionary<string, double>
+        try
+        {
+            var dados = JsonConvert.DeserializeObject<Dictionary<string, List<double>>>(json);
+            var faturamento = dados["faturamento"].Where(valor => valor > 0).ToList();
+
+            double menor = faturamento.Min();
+            double maior = faturamento.Max();
+            double media = faturamento.Average();
+            int diasAcimaMedia = faturamento.Count(valor => valor > media);
+
+            Console.WriteLine($"Desafio 3 - Menor faturamento: {menor:F2}");
+            Console.WriteLine($"Desafio 3 - Maior faturamento: {maior:F2}");
+            Console.WriteLine($"Desafio 3 - Dias com faturamento acima da média: {diasAcimaMedia}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro ao analisar o faturamento: " + ex.Message);
+        }
+    }
+
+    static void Desafio4_PercentualPorEstado()
+    {
+        var faturamentoEstados = new Dictionary<string, double>
         {
             {"SP", 67836.43},
             {"RJ", 36678.66},
@@ -34,55 +83,24 @@ class Program
             {"ES", 27165.48},
             {"Outros", 19849.53}
         };
-        CalcularPercentualFaturamento(faturamentoEstados);
 
-        // Desafio 5: Inverter string
-        string texto = "Hello, C#!";
-        Console.WriteLine("Desafio 5 - String invertida: " + InverterString(texto));
-    }
+        double total = faturamentoEstados.Values.Sum();
 
-    static bool EhFibonacci(int num)
-    {
-        int a = 0, b = 1, temp;
-        while (b < num)
-        {
-            temp = a + b;
-            a = b;
-            b = temp;
-        }
-        return b == num || num == 0;
-    }
-
-    static void AnaliseFaturamento(List<double> faturamento)
-    {
-        var valoresValidos = faturamento.Where(x => x > 0).ToList();
-        double menor = valoresValidos.Min();
-        double maior = valoresValidos.Max();
-        double media = valoresValidos.Average();
-        int diasAcimaMedia = valoresValidos.Count(x => x > media);
-
-        Console.WriteLine($"Desafio 3 - Menor faturamento: {menor}");
-        Console.WriteLine($"Desafio 3 - Maior faturamento: {maior}");
-        Console.WriteLine($"Desafio 3 - Dias acima da média: {diasAcimaMedia}");
-    }
-
-    static void CalcularPercentualFaturamento(Dictionary<string, double> estados)
-    {
-        double total = estados.Values.Sum();
-        foreach (var estado in estados)
+        Console.WriteLine("Desafio 4 - Percentual de faturamento por estado:");
+        foreach (var estado in faturamentoEstados)
         {
             double percentual = (estado.Value / total) * 100;
-            Console.WriteLine($"Desafio 4 - {estado.Key}: {percentual:F2}%");
+            Console.WriteLine($" - {estado.Key}: {percentual:F2}%");
         }
     }
 
-    static string InverterString(string str)
+    static void Desafio5_InverterTexto(string texto)
     {
-        char[] caracteres = new char[str.Length];
-        for (int i = 0; i < str.Length; i++)
-        {
-            caracteres[i] = str[str.Length - 1 - i];
-        }
-        return new string(caracteres);
+        var sb = new StringBuilder();
+
+        for (int i = texto.Length - 1; i >= 0; i--)
+            sb.Append(texto[i]);
+
+        Console.WriteLine($"Desafio 5 - String invertida: {sb}");
     }
 }
